@@ -71,27 +71,11 @@ pipeline {
                 }
             }
         }
-
-        stage('Deploy') {
-            steps {
-                echo 'All tests passed. Deploying to production on port 80'
-                sh '''
-                    docker rm -f lab11-prod || true
-                    docker run -d --name lab11-prod --restart unless-stopped -p 80:80 ${IMAGE_NAME}:${BUILD_NUMBER}
-                '''
-            }
-        }
     }
 
     post {
         always {
             sh 'docker rm -f lab11-staging || true'
-        }
-        success {
-            echo "Build ${BUILD_NUMBER} deployed successfully"
-        }
-        failure {
-            echo "Build ${BUILD_NUMBER} failed. Nothing new was deployed"
         }
     }
 }
